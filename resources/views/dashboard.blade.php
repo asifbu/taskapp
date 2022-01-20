@@ -1,5 +1,5 @@
 @extends('layouts.app')
 @section('contents')
-    <h3>Basic Navbar Example</h3>
-    <p>A navigation bar is a navigation header that is placed at the top of the page.</p>
+    <h3>{{Auth::User()->name}}</h3>
+   
 @endsection

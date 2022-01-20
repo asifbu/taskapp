@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CategoryRequest;
 use App\Models\category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +16,8 @@ class CategotyController extends Controller
      */
     public function index()
     {
-        return view('layouts.categories.index');
+        $data['category_list'] = category::where('created_by',Auth::id())->get();
+        return view('layouts.categories.index',$data);
     }
 
     /**
@@ -36,7 +38,7 @@ class CategotyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
         $category = new category();
         $category->name = $request->category_name;
@@ -65,7 +67,8 @@ class CategotyController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data['category'] = category::find($id);
+        return view('layouts.categories.edit',$data);
     }
 
     /**
@@ -77,7 +80,17 @@ class CategotyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+         
+         $category = category::where('created_by',Auth::id())->find($id);
+         if(!$category)
+         {
+             return redirect('/categories');
+         }
+          $category->name = $request->category_name;
+         $category->save();
+
+         return redirect('/categories');
+        
     }
 
     /**
@@ -88,6 +101,13 @@ class CategotyController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $category = category::where('created_by',Auth::id())->find($id);
+        if(!$category)
+        {
+            return redirect('/categories');
+        }
+        $category->delete();
+
+        return redirect('/categories');
     }
 }
