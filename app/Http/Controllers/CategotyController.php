@@ -16,8 +16,14 @@ class CategotyController extends Controller
      */
     public function index()
     {
-        $data['category_list'] = category::where('created_by',Auth::id())->get();
-        return view('layouts.categories.index',$data);
+
+
+       // $data['category_list'] = category::where('created_by',Auth::id())->get();
+      //  return view('layouts.categories.index',$data);
+
+      // for api
+      $category_list = category::get();
+      return $category_list;
     }
 
     /**
@@ -40,12 +46,20 @@ class CategotyController extends Controller
      */
     public function store(CategoryRequest $request)
     {
+        // $category = new category();
+        // $category->name = $request->category_name;
+        // $category->created_by = Auth::id();
+        // $category->save();
+
+        // return redirect('/categories');
+//for api 
+
         $category = new category();
         $category->name = $request->category_name;
-        $category->created_by = Auth::id();
+        $category->created_by = $request->user_name;
         $category->save();
 
-        return redirect('/categories');
+        return 'success';
     }
 
     /**
@@ -67,8 +81,11 @@ class CategotyController extends Controller
      */
     public function edit($id)
     {
-        $data['category'] = category::find($id);
-        return view('layouts.categories.edit',$data);
+        // $data['category'] = category::find($id);
+        // return view('layouts.categories.edit',$data);
+// for api
+        $category = category::find($id);
+        return $category;
     }
 
     /**
@@ -81,15 +98,28 @@ class CategotyController extends Controller
     public function update(Request $request, $id)
     {
          
-         $category = category::where('created_by',Auth::id())->find($id);
+        //  $category = category::where('created_by',Auth::id())->find($id);
+        //  if(!$category)
+        //  {
+        //      return redirect('/categories');
+        //  }
+        //   $category->name = $request->category_name;
+        //  $category->save();
+
+        //  return redirect('/categories');
+
+
+        //for api
+
+        $category = category::find($id);
          if(!$category)
          {
-             return redirect('/categories');
+             return 'failure request';
          }
           $category->name = $request->category_name;
          $category->save();
 
-         return redirect('/categories');
+         return 'success';
         
     }
 
@@ -101,13 +131,13 @@ class CategotyController extends Controller
      */
     public function destroy($id)
     {
-        $category = category::where('created_by',Auth::id())->find($id);
+        $category = category::find($id);
         if(!$category)
         {
-            return redirect('/categories');
+            return 'fail';
         }
         $category->delete();
 
-        return redirect('/categories');
+        return 'delete success';
     }
 }
